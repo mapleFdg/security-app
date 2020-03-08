@@ -14,7 +14,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import com.maple.security.app.social.AppSignUpUtil;
 import com.maple.security.core.properties.SecurityConstants;
 import com.maple.security.core.social.SocialController;
-import com.maple.security.core.social.SocialUserInfo;
+import com.maple.security.core.social.support.SocialUserInfo;
 
 /**
  * APP 系统定义处理的url

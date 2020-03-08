@@ -5,7 +5,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.social.security.SocialAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
-import com.maple.security.core.social.SocialAuthenticationFilterPostProcessor;
+import com.maple.security.core.social.support.SocialAuthenticationFilterPostProcessor;
 
 @Component
 public class AppSocialAuthenticationFilterPostProcessor implements SocialAuthenticationFilterPostProcessor {

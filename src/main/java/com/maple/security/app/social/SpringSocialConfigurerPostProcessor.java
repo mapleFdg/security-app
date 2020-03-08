@@ -6,7 +6,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
 import com.maple.security.core.properties.SecurityConstants;
-import com.maple.security.core.social.MapleSpringSocialConfigurer;
+import com.maple.security.core.social.support.MapleSpringSocialConfigurer;
 
 /**
  * 
