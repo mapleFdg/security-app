@@ -13,8 +13,6 @@ import com.maple.security.app.authentication.openid.OpenIdAuthenticationSecurity
 import com.maple.security.core.authentication.FormAuthenticationConfig;
 import com.maple.security.core.authentication.mobile.SmsAuthenticationSecurityConfig;
 import com.maple.security.core.authorize.AuthorizeConfigManager;
-import com.maple.security.core.properties.SecurityConstants;
-import com.maple.security.core.properties.SecurityProperties;
 import com.maple.security.core.validate.code.ValidateCodeSecurityConfig;
 
 /**

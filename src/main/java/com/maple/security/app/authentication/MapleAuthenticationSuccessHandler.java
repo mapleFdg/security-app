@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maple.security.core.properties.SecurityProperties;
 
 /**
  * APP环境下认证成功处理器
@@ -40,9 +39,6 @@ public class MapleAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
 	private Logger log = LoggerFactory.getLogger(MapleAuthenticationSuccessHandler.class);
 
-	@Autowired
-	private SecurityProperties securityProperties;
-	
 	@Autowired
 	private ClientDetailsService clientDetailsService;
 	
