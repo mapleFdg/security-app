@@ -1,4 +1,4 @@
-package com.maple.security.app;
+package com.maple.security.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -13,21 +13,40 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
-import com.maple.security.app.jwt.MapleJwtTokenEnhancer;
 import com.maple.security.core.properties.SecurityProperties;
 
+/**
+ * 
+ * 
+ * @author hzc
+ *
+ */
 @Configuration
 public class TokenStoreConfig {
 
-	@Autowired
-	private RedisConnectionFactory redisConnectionFactory;
-
-	@Bean
+	/**
+	 * 使用redis存储token的配置，只有在maple.security.oauth2.tokenStore配置为redis时生效
+	 * @author hzc
+	 *
+	 */
+	@Configuration
 	@ConditionalOnProperty(prefix = "maple.security.oauth2", name = "storeType", havingValue = "redis")
-	public TokenStore redisTokenStore() {
-		return new RedisTokenStore(redisConnectionFactory);
+	public static class RedisConfig {
+		@Autowired
+		private RedisConnectionFactory redisConnectionFactory;
+
+		@Bean
+		public TokenStore redisTokenStore() {
+			return new RedisTokenStore(redisConnectionFactory);
+		}
 	}
 
+	/**
+	 * 使用jwt时的配置，默认生效
+	 * 
+	 * @author hzc
+	 *
+	 */
 	@Configuration
 	@ConditionalOnProperty(prefix = "maple.security.oauth2", name = "storeType", havingValue = "jwt", matchIfMissing = true)
 	public static class JwtTokenConfig {
@@ -48,7 +67,7 @@ public class TokenStoreConfig {
 		}
 
 		@Bean
-		@ConditionalOnMissingBean(name = "jwtTokenEnhancer")
+		@ConditionalOnBean(TokenEnhancer.class)
 		public TokenEnhancer jwtTokenEnhancer() {
 			return new MapleJwtTokenEnhancer();
 		}

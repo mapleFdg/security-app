@@ -12,8 +12,14 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
 
-import com.maple.security.app.AppSecurityException;
+import com.maple.security.app.AppSecretException;
 
+/**
+ * app环境下替换providerSignInUtils，避免由于没有session导致读不到社交用户信息的问题
+ * 
+ * @author hzc
+ *
+ */
 @Component
 public class AppSignUpUtil {
 
@@ -27,7 +33,7 @@ public class AppSignUpUtil {
 	private UsersConnectionRepository usersConnectionRepository;
 
 	/**
-	 * 将connectData存进redis
+	 * 缓存社交网站用户信息到redis
 	 * 
 	 * @param request
 	 * @param connectionData
@@ -36,10 +42,16 @@ public class AppSignUpUtil {
 		redisTemplate.opsForValue().set(getKey(request), connectionData, 10, TimeUnit.MINUTES);
 	}
 
+	/**
+	 * 将缓存的社交网站用户信息与系统注册用户信息绑定
+	 * 
+	 * @param request
+	 * @param userId
+	 */
 	public void doPostSignUp(WebRequest request,String userId) {
 		String key = getKey(request);
 		if(!redisTemplate.hasKey(key)) {
-			throw new AppSecurityException("无法找到缓存的用户社交账号信息");
+			throw new AppSecretException("无法找到缓存的用户社交账号信息");
 		}
 		
 		ConnectionData connectionData = (ConnectionData) redisTemplate.opsForValue().get(key);
@@ -60,7 +72,7 @@ public class AppSignUpUtil {
 	private String getKey(WebRequest request) {
 		String deviceId = request.getHeader("deviceId");
 		if (StringUtils.isBlank(deviceId)) {
-			throw new AppSecurityException("设备Id不能为空");
+			throw new AppSecretException("设备Id不能为空");
 		}
 		return "maple:security:social.connect." + deviceId;
 	}

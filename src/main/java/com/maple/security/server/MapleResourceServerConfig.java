@@ -1,4 +1,4 @@
-package com.maple.security.app;
+package com.maple.security.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -9,29 +9,30 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.social.security.SpringSocialConfigurer;
 
-import com.maple.security.app.social.openid.OpenIdAuthenticationSecurityConfig;
+import com.maple.security.app.authentication.openid.OpenIdAuthenticationSecurityConfig;
 import com.maple.security.core.authentication.mobile.SmsAuthenticationSecurityConfig;
 import com.maple.security.core.authorize.AuthorizeConfigManager;
+import com.maple.security.core.authorize.FormAuthenticationConfig;
 import com.maple.security.core.properties.SecurityConstants;
 import com.maple.security.core.properties.SecurityProperties;
 import com.maple.security.core.validate.code.ValidateCodeSecurityConfig;
 
+/**
+ * 资源服务器配置
+ * 
+ * @author hzc
+ *
+ */
 @Configuration
 @EnableResourceServer
 public class MapleResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-	/**
-	 * 系统配置
-	 */
-	@Autowired
-	private SecurityProperties securityProperties;
-	
 	@Autowired
 	private ValidateCodeSecurityConfig validateCodeSecurityConfig;
-	
+
 	@Autowired
 	private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
-	
+
 	@Autowired
 	private SmsAuthenticationSecurityConfig smsAuthenticationSecurityConfig;
 
@@ -40,35 +41,35 @@ public class MapleResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Autowired
 	protected AuthenticationFailureHandler mapleAuthenticationFailureHandler;
+	
+	@Autowired
+	private FormAuthenticationConfig formAuthenticationConfig;
 
 	/**
 	 * 第三方登录配置类
 	 */
 	@Autowired
 	private SpringSocialConfigurer mapleSocialSecurityConfig;
-	
+
 	@Autowired
 	private AuthorizeConfigManager authorizeConfigManager;
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 
-		http.formLogin().loginPage(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL) // 自定义登录页面
-				.loginProcessingUrl(SecurityConstants.DEFAULT_SIGN_IN_PROCESSING_URL_FORM) // 配置登录的处理页面
-				.successHandler(mapleAuthenticationSuccessHandler) // 自定义登录成功处理
-				.failureHandler(mapleAuthenticationFailureHandler); // 自定义登录失败处理
+		// 表单登录配置
+		formAuthenticationConfig.configure(http);
 
 		http.apply(validateCodeSecurityConfig) // 加载校验码配置信息
-			.and()
-				.apply(smsAuthenticationSecurityConfig)  // 加载短信登录的的配置
-			.and()
-				.apply(mapleSocialSecurityConfig) // 加载第三方登录的配置
-			.and()
-				.apply(openIdAuthenticationSecurityConfig) // 加载关于openid的登录方式
-			.and()
-				.csrf() // csrf防护
-				.disable();
-		
+				.and()
+			.apply(smsAuthenticationSecurityConfig) // 加载短信登录的的配置
+				.and()
+			.apply(mapleSocialSecurityConfig) // 加载第三方登录的配置
+				.and()
+			.apply(openIdAuthenticationSecurityConfig) // 加载关于openid的登录方式
+				.and()
+			.csrf().disable();
+
 		// 权限配置
 		authorizeConfigManager.config(http.authorizeRequests());
 	}

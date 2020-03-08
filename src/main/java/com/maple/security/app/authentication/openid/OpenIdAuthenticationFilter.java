@@ -1,10 +1,9 @@
-package com.maple.security.app.social.openid;
+package com.maple.security.app.authentication.openid;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -13,15 +12,19 @@ import org.springframework.util.Assert;
 
 import com.maple.security.core.properties.SecurityConstants;
 
+/**
+ * 使用openid登录的Filter
+ * 
+ * @author hzc
+ *
+ */
 public class OpenIdAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-// ~ Static fields/initializers
-// =====================================================================================
-
-	public static final String SPRING_SECURITY_FORM_OPENID_KEY = "openId";
-	public static final String SPRING_SECURITY_FORM_PROVIDERID_KEY = "providerId";
-
-	private String openIdParameter = SPRING_SECURITY_FORM_OPENID_KEY;
-	private String providerIdParameter = SPRING_SECURITY_FORM_PROVIDERID_KEY;
+	
+	// ~ Static fields/initializers
+	// =====================================================================================
+	private String openIdParameter = SecurityConstants.DEFAULT_PARAMETER_NAME_OPENID;
+	private String providerIdParameter = SecurityConstants.DEFAULT_PARAMETER_NAME_PROVIDERID;
+	
 	private boolean postOnly = true;
 
 // ~ Constructors
@@ -44,12 +47,15 @@ public class OpenIdAuthenticationFilter extends AbstractAuthenticationProcessing
 		String providerId = obtainProviderId(request);
 
 		if (openId == null) {
-			throw new AuthenticationServiceException("openId不能为空");
+			openId = "";
 		}
 
 		if (providerId == null) {
-			throw new AuthenticationServiceException("providerId不能为空");
+			providerId  = "";
 		}
+		
+		openId.trim();
+		providerId.trim();
 
 		OpenIdAuthenticationToken authRequest = new OpenIdAuthenticationToken(openId, providerId);
 

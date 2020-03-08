@@ -13,6 +13,12 @@ import com.maple.security.core.validate.code.ValidateCodeException;
 import com.maple.security.core.validate.code.ValidateCodeRepository;
 import com.maple.security.core.validate.code.ValidateCodeType;
 
+/**
+ * 基于redis的验证码存取器，避免由于没有session导致无法存取验证码的问题
+ * 
+ * @author hzc
+ *
+ */
 @Component
 public class RedisValidateCodeRepository implements ValidateCodeRepository{
 
@@ -40,7 +46,13 @@ public class RedisValidateCodeRepository implements ValidateCodeRepository{
 	
 	}
 	
-	
+	/**
+	 * 默认使用deviceId识别不同的机器请求
+	 * 
+	 * @param request
+	 * @param validateCodeType
+	 * @return
+	 */
 	private String buildKey(ServletWebRequest request, ValidateCodeType validateCodeType) {
 		String deviceId = request.getHeader("deviceId");
 		

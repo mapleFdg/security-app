@@ -1,4 +1,4 @@
-package com.maple.security.app.social.openid;
+package com.maple.security.app.authentication.openid;
 
 import java.util.Collection;
 
@@ -6,6 +6,12 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
+/**
+ * openid Token
+ * 
+ * @author hzc
+ *
+ */
 public class OpenIdAuthenticationToken  extends AbstractAuthenticationToken {
 
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
