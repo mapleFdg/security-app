@@ -11,6 +11,7 @@ import org.springframework.social.security.SpringSocialConfigurer;
 
 import com.maple.security.app.social.openid.OpenIdAuthenticationSecurityConfig;
 import com.maple.security.core.authentication.mobile.SmsAuthenticationSecurityConfig;
+import com.maple.security.core.authorize.AuthorizeConfigManager;
 import com.maple.security.core.properties.SecurityConstants;
 import com.maple.security.core.properties.SecurityProperties;
 import com.maple.security.core.validate.code.ValidateCodeSecurityConfig;
@@ -45,6 +46,9 @@ public class MapleResourceServerConfig extends ResourceServerConfigurerAdapter {
 	 */
 	@Autowired
 	private SpringSocialConfigurer mapleSocialSecurityConfig;
+	
+	@Autowired
+	private AuthorizeConfigManager authorizeConfigManager;
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
@@ -62,22 +66,11 @@ public class MapleResourceServerConfig extends ResourceServerConfigurerAdapter {
 			.and()
 				.apply(openIdAuthenticationSecurityConfig) // 加载关于openid的登录方式
 			.and()
-				.authorizeRequests() // 配置拦截的请求
-				.antMatchers(securityProperties.getBrowser().getLoginPage(),
-						SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
-						SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
-						securityProperties.getBrowser().getSignUpUrl(),
-						SecurityConstants.DEFAULT_SIGN_IN_PROCESSING_URL_OPENID,
-						"/hello",
-						"/social/signUp",
-						"/social/regist",
-						securityProperties.getBrowser().getSession().getSessionInvalidUrl()) // 排除掉哪些请求
-				.permitAll()
-				.anyRequest()
-				.authenticated()
-			.and()
 				.csrf() // csrf防护
 				.disable();
+		
+		// 权限配置
+		authorizeConfigManager.config(http.authorizeRequests());
 	}
 
 }
