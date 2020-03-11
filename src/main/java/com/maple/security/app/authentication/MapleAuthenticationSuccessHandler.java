@@ -25,7 +25,6 @@ import org.springframework.security.oauth2.provider.token.AuthorizationServerTok
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -54,8 +53,8 @@ public class MapleAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		
-		log.info("登录成功，登录用户：" + JSONObject.toJSONString(authentication));
-
+		log.info(authentication.getName() + " --> 登录成功"  );
+		
 		// 获取请求头中认证信息
 		String header = request.getHeader("Authorization");
 		if (header == null || !header.startsWith("Basic ")) {
